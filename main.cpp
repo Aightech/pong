@@ -3,6 +3,7 @@
 #include <curses.h>
 #include <string.h>
 #include <time.h>
+#include "netapi.hpp"
 
 #define NB_PLAYERS 2
 #define NB_DIM 2
@@ -161,15 +162,42 @@ int update(Pong &p)
 	p.map[p.ball[0]][p.ball[1]] = 'O';
 }
 
-int main()
+int main(int argc, char *argv[])
 {
 	Pong pong;
-	init(pong);
-	while(1)
+	NetAPI api;
+	api.verbose();
+	api.setConnectable();
+	api.setConnectionPhrase((char*)"ok");
+	api.startReceiver(2000,(char*)"TCP");
+
+	//waitSec(2,true);
+	if(argc > 1)
 		{
-			clear(pong);
-			update(pong);
-			draw(pong);	
+			char enter[50];
+			api.connectToServer(2000,(char *)argv[1]);
 		}
+	else
+		while(api.getClientAddr().size() < 1 ){}
+
+	api.sendToClient(0,(char*)"Mhey",(char*)"tcp");
+	api.sendToClient(0,(char*)"Mhoyy",(char*)"tcp");
+	api.sendToClient(0,(char*)"Mhoazda",(char*)"tcp");
+	api.clearSendingThread();
+	cin>>enter;
+
+	int n;
+	cout << "start" << endl;
+	while((n=api.getReceiverBuffer(enter))>-1)
+	{
+		cout << "buffer n°"<< n<< ": "<<enter<< endl;
+	}
+	// init(pong);
+	// while(1)
+	// 	{
+	// 		clear(pong);
+	// 		update(pong);
+	// 		draw(pong);	
+	// 	}
 	return 0;
 }
