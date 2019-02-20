@@ -170,7 +170,7 @@ int main(int argc, char *argv[])
 	char enter[50];
 	char ip_add[50];
 	int choice=0;
-	api.verbose();
+	//api.verbose();
 	api.setConnectable();
 	api.setConnectionPhrase((char*)"ok");
 
@@ -186,13 +186,18 @@ int main(int argc, char *argv[])
         
 	std::cout << "STARTING THE RECEIVER ... " << std::endl;
 	api.startReceiver(2000,(char*)"TCP");
-	int n;
+	int n,tic=0;
+	api.sendToAddress(2000,(char *)ip_add,(char*)"M0",(char*)"tcp");
         while((n=api.getReceiverBuffer(enter))<0)
 		{
-			api.sendToAddress(2000,(char *)ip_add,(char*)"M0",(char*)"tcp");
+			char str[] = "o        \0";
+			for(int i=0;i<10;i++) str[i]= (i==abs((tic%10 - (tic/10)%2*9)%10))?'o':' ';
+			std::cout << "[PONG] waiting player (" << ip_add << ") ... [" << str << "]" <<"\xd"<<std::flush;
+			tic++;
 		}
 	while(1)
 		{
+			std::cout << "GAMING ... " << std::endl;
 			while((n=api.getReceiverBuffer(enter))>-1)
 				{
 					cout << "buffer n°"<< n<< ": "<<enter<< endl;

@@ -317,8 +317,11 @@ int NetAPI::_send(struct sockaddr_in * addr, char * buf, char *protocol, char * 
 		m_Txfd = socket(AF_INET, SOCK_DGRAM, 0);
 	else if(tcpP)
 		m_Txfd = socket(AF_INET, SOCK_STREAM, 0);
-	if (m_Txfd < 0 && m_verbose) {	m_verboseMtx.lock();	printf("ERROR opening Tx socket\n");	m_verboseMtx.unlock();	}
-	
+	if (m_Txfd < 0)
+		{
+			if( m_verbose) {	m_verboseMtx.lock();	printf("ERROR opening Tx socket\n");	m_verboseMtx.unlock();	}
+			return -1;
+		}
 	
 	//----SEND THE MESSAGE ----
 	int n=0;
@@ -326,8 +329,12 @@ int NetAPI::_send(struct sockaddr_in * addr, char * buf, char *protocol, char * 
 		n = sendto(m_Txfd, buf, strlen(buf), MSG_DONTWAIT, (struct sockaddr *)addr, sizeof(*addr));
 	else if (tcpP)
 	{
-		if (connect(m_Txfd,(struct sockaddr *) addr,sizeof(*addr)) < 0 && m_verbose) 
-		{m_verboseMtx.lock();	printf("Tx:ERROR couldn't connect\n");	m_verboseMtx.unlock();	return -1;}
+		if (connect(m_Txfd,(struct sockaddr *) addr,sizeof(*addr)) < 0)
+			{
+				if( m_verbose) 
+					{m_verboseMtx.lock();	printf("Tx:ERROR couldn't connect\n");	m_verboseMtx.unlock();}
+				return -1;
+			}
 		
 		n = write(m_Txfd, buf, strlen(buf));
 	}
