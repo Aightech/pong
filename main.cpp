@@ -226,79 +226,79 @@ int update(Pong &p)
 int main(int argc, char *argv[])
 {
 	Pong pong;
-	// NetAPI api;
-	// char enter[50];
-	// char update_msg[50];
-	// char ip_add[50];
-	// int choice=0;
-	// //api.verbose();
-	// api.setConnectable();
-	// api.setConnectionPhrase((char*)"ok");
+	NetAPI api;
+	char enter[50];
+	char update_msg[50];
+	char ip_add[50];
+	int choice=0;
+	//api.verbose();
+	api.setConnectable();
+	api.setConnectionPhrase((char*)"ok");
 
 
-	// std::cout << "######## ######### #######" << std::endl;
-	// std::cout << "######## PONG GAME #######" << std::endl;
-	// std::cout << std::endl;
+	std::cout << "######## ######### #######" << std::endl;
+	std::cout << "######## PONG GAME #######" << std::endl;
+	std::cout << std::endl;
 
-	// std::cout << "LAN GAME:  Please enter the IP of the adversaire: " << std::endl;
-	// std::cout << "IP address : 192.168.0.";
+	std::cout << "LAN GAME:  Please enter the IP of the adversaire: " << std::endl;
+	std::cout << "IP address : 192.168.0.";
 	
-	// cin >> ip_add;
-	// if(strlen(ip_add)<4)
-	// 	sprintf(ip_add,"192.168.0.%d",atoi(ip_add));
+	cin >> ip_add;
+	if(strlen(ip_add)<4)
+		sprintf(ip_add,"192.168.0.%d",atoi(ip_add));
         
-	// std::cout << "STARTING THE RECEIVER ... " << std::endl;
-	// api.startReceiver(2000,(char*)"TCP");
-	// int n,tic=0;
-	// int master = 0;
-	// sprintf(update_msg,"M%d",master);
-	// if(api.sendToAddress(2000,(char *)ip_add,(char*)update_msg,(char*)"tcp")==1)
-	// 	master = 1;
-	// else
-	// 	{
-	// 		while((n=api.getReceiverBuffer(enter))<0)
-	// 			{
-	// 				char str[] = "o        \0";
-	// 				for(int i=0;i<10;i++) str[i]= (i==abs((tic%10 - (tic/10)%2*9)%10))?'o':' ';
-	// 				std::cout << "[PONG] waiting player (" << ip_add << ") ... [" << str << "]" <<"\xd"<<std::flush;
-	// 				tic++;
-	// 			}
-	// 	}
+	std::cout << "STARTING THE RECEIVER ... " << std::endl;
+	api.startReceiver(2000,(char*)"TCP");
+	int n,tic=0;
+	int master = 0;
+	sprintf(update_msg,"M%d",master);
+	if(api.sendToAddress(2000,(char *)ip_add,(char*)update_msg,(char*)"tcp")==1)
+		master = 1;
+	else
+		{
+			while((n=api.getReceiverBuffer(enter))<0)
+				{
+					char str[] = "o        \0";
+					for(int i=0;i<10;i++) str[i]= (i==abs((tic%10 - (tic/10)%2*9)%10))?'o':' ';
+					std::cout << "[PONG] waiting player (" << ip_add << ") ... [" << str << "]" <<"\xd"<<std::flush;
+					tic++;
+				}
+		}
 
-	// int val[4];
-	// init(pong, (master)?1:-1);
-	// while(1)
-	// 	{
-	// 		clear(pong);
-	// 		while((n=api.getReceiverBuffer(enter))>-1)
-	// 			for(int i = 0 ; i < 6; i++)
-	// 				val[i] = atoi(strchr(enter,'a'+i)+1);	
-				
-			
-	// 		pong.pos[1][0] = val[0];
-	// 		if(!master)
-	// 			{
-					
-	// 				pong.ball[0] = val[2];
-	// 				pong.ball[1] = pong.size[1]-1 - val[3];
-	// 			}
-	// 		else
-	// 			{
-	// 				update(pong);
-	// 			}
-	// 		sprintf(update_msg,"Ma%db%dc%dd%d",pong.pos[0][0],pong.pos[1][0],pong.ball[0],pong.ball[1]);
-	// 		api.sendToAddress(2000,(char *)ip_add,(char*)update_msg,(char*)"tcp");
-	//  		draw(pong);
-
-			
-	// 	}
-	init(pong,1);
+	int val[4];
+	init(pong, (master)?1:-1);
 	while(1)
 		{
 			clear(pong);
-			update(pong);
-			draw(pong);
+			while((n=api.getReceiverBuffer(enter))>-1)
+				for(int i = 0 ; i < 6; i++)
+					val[i] = atoi(strchr(enter,'a'+i)+1);	
+				
+			
+			pong.pos[1][0] = val[0];
+			if(!master)
+				{
+					
+					pong.ball[0] = val[2];
+					pong.ball[1] = pong.size[1]-1 - val[3];
+				}
+			else
+				{
+					update(pong);
+				}
+			sprintf(update_msg,"Ma%db%dc%dd%d",pong.pos[0][0],pong.pos[1][0],pong.ball[0],pong.ball[1]);
+			api.sendToAddress(2000,(char *)ip_add,(char*)update_msg,(char*)"tcp");
+	 		draw(pong);
+
+			
 		}
+	// init(pong,1);
+	// while(1)
+	// 	{
+	// 		clear(pong);
+	// 		update(pong);
+	// 		draw(pong);
+	// 	}
 	
 
 	return 0;
