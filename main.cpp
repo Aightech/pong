@@ -196,6 +196,7 @@ int main(int argc, char *argv[])
 				{
 					cout << "buffer n°"<< n<< ": "<<enter<< endl;
 				}
+			api.sendToAddress(2000,(char *)enter,(char*)"M0",(char*)"tcp");
 		}
 	
 	// //waitSec(2,true);
