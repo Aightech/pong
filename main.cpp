@@ -31,6 +31,7 @@ typedef struct _Pong
 //clar the whole map
 int clear(Pong &p)
 {
+
 	for(int i = 0 ; i < HEIGHT ; i++)
 		{
 			for(int j = 0 ; j < WIDTH ; j++)
@@ -92,6 +93,7 @@ int draw(Pong &p)
 	p.map[p.ball[0]][p.ball[1]] = 'O';
 	
 	initscr();
+	//	clear();
 	cbreak();
 	noecho();
 	timeout(50);
@@ -276,6 +278,7 @@ int main(int argc, char *argv[])
 				
 			
 			pong.pos[1][0] = val[0];
+			std::cout << "master :" << master << std::endl;
 			if(!master)
 				{
 					
@@ -288,7 +291,7 @@ int main(int argc, char *argv[])
 				{
 					update(pong);
 				}
-			sprintf(update_msg,"Ma%db%dc%dd%de%df%d",pong.pos[0][0],pong.pos[1][0],pong.ball[0],pong.ball[1],pong.score[0],pong.score[1]);
+			sprintf(update_msg,"a%db%dc%dd%de%df%d",pong.pos[0][0],pong.pos[1][0],pong.ball[0],pong.ball[1],pong.score[0],pong.score[1]);
 			api.sendToAddress(2000,(char *)ip_add,(char*)update_msg,(char*)"tcp");
 	 		draw(pong);
 
