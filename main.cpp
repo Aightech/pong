@@ -193,13 +193,16 @@ int main(int argc, char *argv[])
 	sprintf(update_msg,"M%d",master);
 	if(api.sendToAddress(2000,(char *)ip_add,(char*)update_msg,(char*)"tcp")==1)
 		master = 1;
-        while((n=api.getReceiverBuffer(enter))<0)
+	else
 		{
-			char str[] = "o        \0";
-			for(int i=0;i<10;i++) str[i]= (i==abs((tic%10 - (tic/10)%2*9)%10))?'o':' ';
-			std::cout << "[PONG] waiting player (" << ip_add << ") ... [" << str << "]" <<"\xd"<<std::flush;
-			tic++;
-		};
+			while((n=api.getReceiverBuffer(enter))<0)
+				{
+					char str[] = "o        \0";
+					for(int i=0;i<10;i++) str[i]= (i==abs((tic%10 - (tic/10)%2*9)%10))?'o':' ';
+					std::cout << "[PONG] waiting player (" << ip_add << ") ... [" << str << "]" <<"\xd"<<std::flush;
+					tic++;
+				}
+		}
 
 	int val[4];
 	init(pong, (master)?1:-1);
