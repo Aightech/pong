@@ -66,7 +66,7 @@ int init(Pong &p,int first_dir)
 	p.angleCoef[0]=0.5;
 	p.angleCoef[1]=0.5*dir;
 	p.time = clock();
-	p.speed = 5000;
+	p.speed = 500;
 	
 	
 }
