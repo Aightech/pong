@@ -186,7 +186,7 @@ int main(int argc, char *argv[])
 	std::cout << "STARTING THE RECEIVER ... " << std::endl;
 	api.startReceiver(2000,(char*)"TCP");
 	int n;
-        while((n=api.getReceiverBuffer(enter))>-1)
+        while((n=api.getReceiverBuffer(enter))<0)
 		{
 			api.sendToAddress(2000,(char *)enter,(char*)"M0",(char*)"tcp");
 		}
