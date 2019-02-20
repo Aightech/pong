@@ -67,7 +67,7 @@ int init(Pong &p,int first_dir)
 	p.angleCoef[0]=0.5;
 	p.angleCoef[1]=0.5*dir;
 	p.time = clock();
-	p.speed = 5000;
+	p.speed = 50000;
 	
 	
 }
@@ -176,7 +176,7 @@ int update(Pong &p)
 {
 	double dt = p.speed*(double)(clock() - p.time) / (double)CLOCKS_PER_SEC;
 	p.time = clock();
-	//std::cout << dt<< std::endl;
+	std::cout << dt<< std::endl;
 	//make it boing against wall
 	for(int i = 0 ; i< NB_DIM; i++)
 		{
@@ -267,15 +267,17 @@ int main(int argc, char *argv[])
 				}
 		}
 
-	int val[4];
+	int val[6];
 	init(pong, (master)?1:-1);
+	std::cout << "master :" << master << "ball j" << pong.size[1] << std::endl;
 	while(1)
 		{
+			
 			clear(pong);
+			
 			while((n=api.getReceiverBuffer(enter))>-1)
 				for(int i = 0 ; i < 6; i++)
 					val[i] = atoi(strchr(enter,'a'+i)+1);	
-				
 			
 			pong.pos[1][0] = val[0];
 			std::cout << "master :" << master << std::endl;
@@ -283,7 +285,7 @@ int main(int argc, char *argv[])
 				{
 					
 					pong.ball[0] = val[2];
-					pong.ball[1] = pong.size[1]-1 - val[3];
+					pong.ball[1] = pong.size[1]-2 - val[3];
 					pong.score[0]= val[4];
 					pong.score[1]= val[5];
 				}
@@ -291,12 +293,14 @@ int main(int argc, char *argv[])
 				{
 					update(pong);
 				}
-			sprintf(update_msg,"a%db%dc%dd%de%df%d",pong.pos[0][0],pong.pos[1][0],pong.ball[0],pong.ball[1],pong.score[0],pong.score[1]);
+			std::cout << "master :" << master << "ball j" << pong.ball[1] << std::endl;
+       		sprintf(update_msg,"a%db%dc%dd%de%df%d",pong.pos[0][0],pong.pos[1][0],pong.ball[0],pong.ball[1],pong.score[0],pong.score[1]);
 			api.sendToAddress(2000,(char *)ip_add,(char*)update_msg,(char*)"tcp");
+			
 	 		draw(pong);
 
 			
-		}
+			}
 	// init(pong,1);
 	// while(1)
 	// 	{
