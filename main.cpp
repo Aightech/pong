@@ -281,12 +281,14 @@ int main(int argc, char *argv[])
 					
 					pong.ball[0] = val[2];
 					pong.ball[1] = pong.size[1]-1 - val[3];
+					pong.score[0]= val[4];
+					pong.score[1]= val[5];
 				}
 			else
 				{
 					update(pong);
 				}
-			sprintf(update_msg,"Ma%db%dc%dd%d",pong.pos[0][0],pong.pos[1][0],pong.ball[0],pong.ball[1]);
+			sprintf(update_msg,"Ma%db%dc%dd%de%df%d",pong.pos[0][0],pong.pos[1][0],pong.ball[0],pong.ball[1],pong.score[0],pong.score[1]);
 			api.sendToAddress(2000,(char *)ip_add,(char*)update_msg,(char*)"tcp");
 	 		draw(pong);
 
