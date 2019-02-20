@@ -72,6 +72,22 @@ int init(Pong &p,int first_dir)
 //redraw the map and the bordure in the terminal
 int draw(Pong &p)
 {
+	//redraw the rackets in the map
+	int j;
+	for(int pl = 0 ; pl < NB_PLAYERS; pl++)
+		{
+			
+			for(int i = p.pos[pl][0] ; i < p.pos[pl][0] + L; i++)
+				{
+					j = p.pos[pl][1];
+					//std::cout <<i << " " <<  j << std::endl;
+					p.map[i][j] = '#';
+				}
+		}
+
+	//draw the ball in the map
+	p.map[p.ball[0]][p.ball[1]] = 'O';
+	
 	initscr();
 	cbreak();
 	noecho();
@@ -79,6 +95,11 @@ int draw(Pong &p)
 	endwin();
 	
 	p.c = getch();
+	//if the player pressed a key to move
+	if(p.c == 'z' && p.pos[0][0] > 0)
+		p.pos[0][0]--;
+	if(p.c == 's' && p.pos[0][0] < HEIGHT - L)
+		p.pos[0][0]++;
 	std::cout << std::endl;
 	std::cout << '+';
 	for(int j = 0 ; j < WIDTH ; j++)
@@ -98,6 +119,8 @@ int draw(Pong &p)
 		std::cout << '-';
 	std::cout << '+'<<std::endl;
 	std::cout << std::endl;
+
+	
 	
 }
 
@@ -140,27 +163,9 @@ int update(Pong &p)
 		}
 	
 	
-	//if the player pressed a key to move
-	if(p.c == 'z' && p.pos[0][0] > 0)
-		p.pos[0][0]--;
-	if(p.c == 's' && p.pos[0][0] < HEIGHT - L)
-		p.pos[0][0]++;
+	
 
-	//redraw the rackets in the map
-	int j;
-	for(int pl = 0 ; pl < NB_PLAYERS; pl++)
-		{
-			
-			for(int i = p.pos[pl][0] ; i < p.pos[pl][0] + L; i++)
-				{
-					j = p.pos[pl][1];
-					//std::cout <<i << " " <<  j << std::endl;
-					p.map[i][j] = '#';
-				}
-		}
-
-	//draw the ball in the map
-	p.map[p.ball[0]][p.ball[1]] = 'O';
+	
 }
 
 
@@ -182,9 +187,11 @@ int main(int argc, char *argv[])
 	std::cout << std::endl;
 
 	std::cout << "LAN GAME:  Please enter the IP of the adversaire: " << std::endl;
-	std::cout << "IP address : ";
+	std::cout << "IP address : 192.168.0.";
 	
 	cin >> ip_add;
+	if(strlen(ip_add)<4)
+		sprintf(ip_add,"192.168.0.%d",atoi(ip_add));
         
 	std::cout << "STARTING THE RECEIVER ... " << std::endl;
 	api.startReceiver(2000,(char*)"TCP");
@@ -218,7 +225,7 @@ int main(int argc, char *argv[])
 						val[i] = atoi(strchr(enter,'a'+i)+1);	
 				}
 			
-			pong.pos[0][1] = val[0];
+			pong.pos[1][0] = val[0];
 			if(!master)
 				{
 					
