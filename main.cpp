@@ -189,22 +189,25 @@ int main(int argc, char *argv[])
 	std::cout << "STARTING THE RECEIVER ... " << std::endl;
 	api.startReceiver(2000,(char*)"TCP");
 	int n,tic=0;
-	api.sendToAddress(2000,(char *)ip_add,(char*)"M0",(char*)"tcp");
+	int master = 0;
+	sprintf(update_msg,"M%d",master);
+	if(api.sendToAddress(2000,(char *)ip_add,(char*)update_msg,(char*)"tcp")==1)
+		master = 1;
         while((n=api.getReceiverBuffer(enter))<0)
 		{
 			char str[] = "o        \0";
 			for(int i=0;i<10;i++) str[i]= (i==abs((tic%10 - (tic/10)%2*9)%10))?'o':' ';
 			std::cout << "[PONG] waiting player (" << ip_add << ") ... [" << str << "]" <<"\xd"<<std::flush;
 			tic++;
-		}
+		};
 
 	int val[4];
-	init(pong, (tic>100)?1:-1);
+	init(pong, (master)?1:-1);
 	while(1)
 		{
 			std::cout << "GAMING ... " << std::endl;
 			clear(pong);
-			if(tic<100)
+			if(!master)
 				{
 					while((n=api.getReceiverBuffer(enter))>-1)
 						{
