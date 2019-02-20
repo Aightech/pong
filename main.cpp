@@ -168,6 +168,7 @@ int main(int argc, char *argv[])
 	Pong pong;
 	NetAPI api;
 	char enter[50];
+	char ip_add[50];
 	int choice=0;
 	api.verbose();
 	api.setConnectable();
@@ -181,14 +182,14 @@ int main(int argc, char *argv[])
 	std::cout << "LAN GAME:  Please enter the IP of the adversaire: " << std::endl;
 	std::cout << "IP address : ";
 	
-	cin >> enter;
+	cin >> ip_add;
         
 	std::cout << "STARTING THE RECEIVER ... " << std::endl;
 	api.startReceiver(2000,(char*)"TCP");
 	int n;
         while((n=api.getReceiverBuffer(enter))<0)
 		{
-			api.sendToAddress(2000,(char *)enter,(char*)"M0",(char*)"tcp");
+			api.sendToAddress(2000,(char *)ip_add,(char*)"M0",(char*)"tcp");
 		}
 	while(1)
 		{
@@ -196,7 +197,7 @@ int main(int argc, char *argv[])
 				{
 					cout << "buffer n°"<< n<< ": "<<enter<< endl;
 				}
-			api.sendToAddress(2000,(char *)enter,(char*)"M0",(char*)"tcp");
+			api.sendToAddress(2000,(char *)ip_add,(char*)"0",(char*)"tcp");
 		}
 	
 	// //waitSec(2,true);
