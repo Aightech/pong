@@ -247,6 +247,38 @@ void NetAPI::sendToClient(int index, char * buf, char *protocol)
 		send(m_claddr[index],buf,protocol);
 }
 
+int NetAPI::sendToAddress(int port, char * IP, char * buf, char *protocol, char * recvBuff)
+{
+	char request[30];
+	sprintf(request,"M%s",buf);
+	char reply[50];
+	
+	
+	struct sockaddr_in addr = getAddr(port,IP);
+	int n = this->send(&addr,(char *)request,(char*)"tcp",reply);
+
+	if(n>-1)//if the server accepted the connection request by replying "accepted"
+	{
+		if(m_verbose)
+		{
+			m_verboseMtx.lock();
+			printf("General:message sent to %s:%d\n", inet_ntoa(addr.sin_addr), ntohs(addr.sin_port));
+			m_verboseMtx.unlock();
+		}
+		return 1;
+	}
+	else
+	{
+		if(m_verbose)
+		{
+			m_verboseMtx.lock();
+			printf("General:Connection fail to %s:%d\n", IP, port);
+			m_verboseMtx.unlock();
+		}
+		return 0;
+	}
+}
+
 void NetAPI::clearSendingThread()
 {
 	for (int i = 0; i < m_TxThread.size(); i ++)

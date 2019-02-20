@@ -162,36 +162,60 @@ int update(Pong &p)
 	p.map[p.ball[0]][p.ball[1]] = 'O';
 }
 
+
 int main(int argc, char *argv[])
 {
 	Pong pong;
 	NetAPI api;
+	char enter[50];
+	int choice=0;
 	api.verbose();
 	api.setConnectable();
 	api.setConnectionPhrase((char*)"ok");
+
+
+	std::cout << "######## ######### #######" << std::endl;
+	std::cout << "######## PONG GAME #######" << std::endl;
+	std::cout << std::endl;
+
+	std::cout << "LAN GAME:  Please enter the IP of the adversaire: " << std::endl;
+	std::cout << "IP address : ";
+	
+	cin >> enter;
+        
+	std::cout << "STARTING THE RECEIVER ... " << std::endl;
 	api.startReceiver(2000,(char*)"TCP");
-
-	//waitSec(2,true);
-	if(argc > 1)
-		{
-			char enter[50];
-			api.connectToServer(2000,(char *)argv[1]);
-		}
-	else
-		while(api.getClientAddr().size() < 1 ){}
-
-	api.sendToClient(0,(char*)"Mhey",(char*)"tcp");
-	api.sendToClient(0,(char*)"Mhoyy",(char*)"tcp");
-	api.sendToClient(0,(char*)"Mhoazda",(char*)"tcp");
-	api.clearSendingThread();
-	cin>>enter;
-
 	int n;
-	cout << "start" << endl;
+        while((n=api.getReceiverBuffer(enter))>-1)
+		{
+			api.sendToAddress(2000,(char *)enter,(char*)"M0",(char*)"tcp");
+		}
 	while((n=api.getReceiverBuffer(enter))>-1)
-	{
-		cout << "buffer n°"<< n<< ": "<<enter<< endl;
-	}
+		{
+			cout << "buffer n°"<< n<< ": "<<enter<< endl;
+		}
+	
+	// //waitSec(2,true);
+	// if(argc > 1)
+	// 	{
+	// 		char enter[50];
+	// 		api.connectToServer(2000,(char *)argv[1]);
+	// 	}
+	// else
+	// 	while(api.getClientAddr().size() < 1 ){}
+
+	// api.sendToClient(0,(char*)"Mhey",(char*)"tcp");
+	// api.sendToClient(0,(char*)"Mhoyy",(char*)"tcp");
+	// api.sendToClient(0,(char*)"Mhoazda",(char*)"tcp");
+	// api.clearSendingThread();
+	// cin>>enter;
+
+	// int n;
+	// cout << "start" << endl;
+	// while((n=api.getReceiverBuffer(enter))>-1)
+	// {
+	// 	cout << "buffer n°"<< n<< ": "<<enter<< endl;
+	// }
 	// init(pong);
 	// while(1)
 	// 	{

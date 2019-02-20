@@ -48,8 +48,9 @@ class NetAPI
 	//------ SENDING METHODES ---------// 
 	int send(struct sockaddr_in * addr, char * buf, char *protocol=NULL, char * recvBuff=NULL);
 	int sendToServer(char * buf,char *protocol=NULL, char * recvBuff=NULL){	return send(&m_Serveraddr, buf, protocol, recvBuff);	};
-	void sendToClient(int index, char * buf, char *protocol=NULL);
-	
+	void sendToClient(int index, char * buf, char *protocol=NULL);	
+	int sendToAddress(int port, char * IP, char * buf, char *protocol=NULL, char * recvBuff=NULL);
+
 	
 	void clearSendingThread();
 	
