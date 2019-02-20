@@ -64,7 +64,7 @@ int init(Pong &p,int first_dir)
 	p.angleCoef[0]=0.5;
 	p.angleCoef[1]=0.5*dir;
 	p.time = clock();
-	p.speed = 5000;
+	p.speed = 500;
 	
 }
 
@@ -230,7 +230,7 @@ int main(int argc, char *argv[])
 				{
 					
 					pong.ball[0] = val[2];
-					pong.ball[1] = val[3];
+					pong.ball[1] = WIDTH/2 - val[3];
 				}
 			else
 				{
