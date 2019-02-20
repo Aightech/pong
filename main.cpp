@@ -41,7 +41,7 @@ int clear(Pong &p)
 }
 
 //init all the parameters
-int init(Pong &p)
+int init(Pong &p,int first_dir)
 {
 	p.size[0] = HEIGHT;
 	p.size[1] = WIDTH;
@@ -60,8 +60,9 @@ int init(Pong &p)
 			p.dir[i]=-0.6;
 			p.angleCoef[i]=i;
 		}
+	int dir = first_dir/abs(first_dir);
 	p.angleCoef[0]=0.5;
-	p.angleCoef[1]=0.5;
+	p.angleCoef[1]=0.5*dir;
 	p.time = clock();
 	p.speed = 5000;
 	
@@ -168,6 +169,7 @@ int main(int argc, char *argv[])
 	Pong pong;
 	NetAPI api;
 	char enter[50];
+	char update_msg[50];
 	char ip_add[50];
 	int choice=0;
 	//api.verbose();
@@ -195,43 +197,32 @@ int main(int argc, char *argv[])
 			std::cout << "[PONG] waiting player (" << ip_add << ") ... [" << str << "]" <<"\xd"<<std::flush;
 			tic++;
 		}
+
+	int val[4];
+	init(pong, (tic>100)?1:-1);
 	while(1)
 		{
 			std::cout << "GAMING ... " << std::endl;
 			while((n=api.getReceiverBuffer(enter))>-1)
 				{
 					cout << "buffer n°"<< n<< ": "<<enter<< endl;
+					
+					for(int i = 0 ; i < 4; i++)
+						val[i] = atoi(strchr(enter,'a'+i)+1);	
 				}
-			api.sendToAddress(2000,(char *)ip_add,(char*)"0",(char*)"tcp");
+			pong.pos[0][0] = val[0];
+			pong.pos[1][0] = val[1];
+			pong.ball[0] = val[2];
+			pong.ball[1] = val[3];
+			
+			clear(pong);
+	 		update(pong);
+	 		draw(pong);
+
+			sprintf(update_msg,"Ma%db%dc%dd%d",pong.pos[0][0],pong.pos[1][0],pong.ball[0],pong.ball[1]);
+			api.sendToAddress(2000,(char *)ip_add,(char*)update_msg,(char*)"tcp");
 		}
 	
-	// //waitSec(2,true);
-	// if(argc > 1)
-	// 	{
-	// 		char enter[50];
-	// 		api.connectToServer(2000,(char *)argv[1]);
-	// 	}
-	// else
-	// 	while(api.getClientAddr().size() < 1 ){}
 
-	// api.sendToClient(0,(char*)"Mhey",(char*)"tcp");
-	// api.sendToClient(0,(char*)"Mhoyy",(char*)"tcp");
-	// api.sendToClient(0,(char*)"Mhoazda",(char*)"tcp");
-	// api.clearSendingThread();
-	// cin>>enter;
-
-	// int n;
-	// cout << "start" << endl;
-	// while((n=api.getReceiverBuffer(enter))>-1)
-	// {
-	// 	cout << "buffer n°"<< n<< ": "<<enter<< endl;
-	// }
-	// init(pong);
-	// while(1)
-	// 	{
-	// 		clear(pong);
-	// 		update(pong);
-	// 		draw(pong);	
-	// 	}
 	return 0;
 }
