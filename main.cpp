@@ -203,24 +203,30 @@ int main(int argc, char *argv[])
 	while(1)
 		{
 			std::cout << "GAMING ... " << std::endl;
-			while((n=api.getReceiverBuffer(enter))>-1)
-				{
-					cout << "buffer n°"<< n<< ": "<<enter<< endl;
-					
-					for(int i = 0 ; i < 4; i++)
-						val[i] = atoi(strchr(enter,'a'+i)+1);	
-				}
-			pong.pos[0][0] = val[0];
-			pong.pos[1][0] = val[1];
-			pong.ball[0] = val[2];
-			pong.ball[1] = val[3];
-			
 			clear(pong);
-	 		update(pong);
+			if(tic<100)
+				{
+					while((n=api.getReceiverBuffer(enter))>-1)
+						{
+							cout << "buffer n°"<< n<< ": "<<enter<< endl;
+					
+							for(int i = 0 ; i < 4; i++)
+								val[i] = atoi(strchr(enter,'a'+i)+1);	
+						}
+					pong.pos[0][0] = val[0];
+					pong.pos[1][0] = val[1];
+					pong.ball[0] = val[2];
+					pong.ball[1] = val[3];
+				}
+			else
+				{
+					update(pong);
+					sprintf(update_msg,"Ma%db%dc%dd%d",pong.pos[0][0],pong.pos[1][0],pong.ball[0],pong.ball[1]);
+					api.sendToAddress(2000,(char *)ip_add,(char*)update_msg,(char*)"tcp");
+				}
 	 		draw(pong);
 
-			sprintf(update_msg,"Ma%db%dc%dd%d",pong.pos[0][0],pong.pos[1][0],pong.ball[0],pong.ball[1]);
-			api.sendToAddress(2000,(char *)ip_add,(char*)update_msg,(char*)"tcp");
+			
 		}
 	
 
