@@ -190,9 +190,12 @@ int main(int argc, char *argv[])
 		{
 			api.sendToAddress(2000,(char *)enter,(char*)"M0",(char*)"tcp");
 		}
-	while((n=api.getReceiverBuffer(enter))>-1)
+	while(1)
 		{
-			cout << "buffer n°"<< n<< ": "<<enter<< endl;
+			while((n=api.getReceiverBuffer(enter))>-1)
+				{
+					cout << "buffer n°"<< n<< ": "<<enter<< endl;
+				}
 		}
 	
 	// //waitSec(2,true);
